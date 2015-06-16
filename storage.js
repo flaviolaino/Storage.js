@@ -61,7 +61,7 @@ var Storage = {
 					to_push = false;
 
 				for(var filter in filters){
-					if(item.hasOwnProperty(filter) && item[filter].indexOf(filters[filter]) > -1){
+					if(item.hasOwnProperty(filter) && item[filter].toLowerCase().indexOf(filters[filter].toLowerCase()) > -1){
 						to_push = true;
 					}else{
 						to_push = false;
