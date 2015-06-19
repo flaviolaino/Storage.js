@@ -58,17 +58,17 @@ var Storage = {
 		if(typeof filters == 'object' && Object.getOwnPropertyNames(filters).length !== 0){
 			for(var i in items){
 				var item = items[i],
-					to_push = false;
+					to_push = 0;
 
 				for(var filter in filters){
 					if(item.data.hasOwnProperty(filter) && item.data[filter].toLowerCase().indexOf(filters[filter].toLowerCase()) > -1){
-						to_push = true;
+						to_push++;
 					}else{
-						to_push = false;
+						to_push--;
 					}
 				}
 
-				if(to_push === true){
+				if(to_push > 0){
 					found.push(item);
 				}
 			}
