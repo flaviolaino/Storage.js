@@ -7,12 +7,15 @@ var Storage = {
 	found: [],
 
 	setDB: function(db_name){
+
 		this.db = db_name;
 
 		return this;
+
 	},
 
 	insert: function(id, data){
+
 		var db = this.storage[this.db] || '[]',
 			items = JSON.parse(db) || [];
 
@@ -21,35 +24,47 @@ var Storage = {
 		this.storage.setItem(this.db, JSON.stringify(items));
 
 		return this;
+
 	},
 
 	update: function(id, data){
-		var db = this.storage[this.db] || '[]',
-			items = JSON.parse(db) || [];
 
-		items[id] = data;
+		var db = this.storage[this.db] || '[]',
+			items = JSON.parse(db) || [],
+			to_update_idx = this.getIndexByValue(items, id);
+
+		items[to_update_idx] = data;
 
 		this.storage.removeItem(this.db);
 
 		this.storage.setItem(this.db, JSON.stringify(items));
 
 		return this;
+
 	},
 
 	delete: function(id){
+
 		var db = this.storage[this.db],
-			items = JSON.parse(db);
+			items = JSON.parse(db),
+			to_delete_idx = this.getIndexByValue(items, id);
 
-		delete items[id];
+		if(to_delete_idx >= 0){
 
-		this.storage.removeItem(this.db);
+			delete items[to_delete_idx];
 
-		this.storage.setItem(this.db, JSON.stringify(items));
+			this.storage.removeItem(this.db);
+
+			this.storage.setItem(this.db, JSON.stringify(items));
+
+		}
 
 		return this;
+
 	},
 
 	select: function(filters){
+
 		var db = this.storage[this.db] || '[]',
 			items = JSON.parse(db),
 			found = [],
@@ -61,7 +76,10 @@ var Storage = {
 					to_push = 0;
 
 				for(var filter in filters){
-					if(item.data.hasOwnProperty(filter) && item.data[filter].toLowerCase().indexOf(filters[filter].toLowerCase()) > -1){
+					if(
+						(item.hasOwnProperty(filter) && item[filter].toLowerCase().indexOf(filters[filter].toLowerCase()) > -1)
+					||  (item.data.hasOwnProperty(filter) && item.data[filter].toLowerCase().indexOf(filters[filter].toLowerCase()) > -1)
+					){
 						to_push++;
 					}else{
 						to_push--;
@@ -79,6 +97,19 @@ var Storage = {
 		this.found = found;
 
 		return this;
+
+	},
+
+	getIndexByValue: function(obj, val, id_field_name){
+
+		var id_field_name = id_field_name || 'id';
+
+		var idx = obj.map(function(e){
+			return e[id_field_name];
+		}).indexOf(val);
+
+		return idx;
+
 	}
 
 }
