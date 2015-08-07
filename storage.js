@@ -51,7 +51,7 @@ var Storage = {
 
 		if(to_delete_idx >= 0){
 
-			delete items[to_delete_idx];
+			delete items.splice(to_delete_idx, 1);
 
 			this.storage.removeItem(this.db);
 
